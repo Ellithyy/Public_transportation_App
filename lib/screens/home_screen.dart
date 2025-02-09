@@ -8,9 +8,20 @@ import 'package:public_tranport_app/widgets/account_box.dart';
 import 'package:public_tranport_app/widgets/transport_card.dart';
 import '../schedule.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  late List<Schedule> schedules;
+  late Account account;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Mock Schedule Data
     String schJson = """[{
       "fromTime":"10:00",
       "toTime":"10:30",
@@ -31,14 +42,17 @@ class Home extends StatelessWidget {
     }]""";
 
     var dSch = jsonDecode(schJson);
-    var schedules = (dSch as List).map((data) => Schedule.fromJson(data)).toList();
+    schedules = (dSch as List).map((data) => Schedule.fromJson(data)).toList();
 
+    // Mock Account Data
     String accJson =
         '{"firstName": "Muhammad", "lastName": "Ellithy", "balance": 18, "rewards": 10.25, "trips": 189}';
-
     var dAcc = jsonDecode(accJson);
-    Account account = Account.fromJson(dAcc);
+    account = Account.fromJson(dAcc);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kMoonStones,
       body: SafeArea(
@@ -49,43 +63,36 @@ class Home extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // User Greeting
+                  // Greeting
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Hello,\nMuhammad',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 32,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Where will you go today?',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
                       CircleAvatar(
                         radius: 25,
                         backgroundColor: kGray,
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 30,
-                        ),
+                        child: Icon(Icons.person, color: Colors.white, size: 30),
                       ),
                     ],
                   ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Hello,\nMuhammad',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 32,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Where will you go today?',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
                   SizedBox(height: 20),
+
                   // Search Bar
                   TextField(
                     decoration: InputDecoration(
@@ -106,10 +113,11 @@ class Home extends StatelessWidget {
                 ],
               ),
             ),
+
             Expanded(
               child: Stack(
                 children: [
-                  // Background container for transport options
+                  // White Background Container
                   Positioned(
                     top: 100,
                     left: 0,
@@ -145,6 +153,8 @@ class Home extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 15),
+
+                              // Bus Option
                               TransportCard(
                                 name: 'Bus',
                                 image: 'assets/images/bus.png',
@@ -166,6 +176,8 @@ class Home extends StatelessWidget {
                                 },
                               ),
                               SizedBox(height: 20),
+
+                              // MRT Option
                               TransportCard(
                                 name: 'MRT',
                                 image: 'assets/images/small_mrt.png',
@@ -195,6 +207,7 @@ class Home extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   // Account Balance Summary
                   Positioned(
                     top: 10,

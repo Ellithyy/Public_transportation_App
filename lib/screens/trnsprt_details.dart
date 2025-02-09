@@ -11,7 +11,7 @@ class TrnsprtDetails extends StatelessWidget {
   final String image;
   final String location;
   final String destination;
-  final List schedules;
+  final List<Schedule> schedules;
 
   const TrnsprtDetails({
     Key? key,
@@ -28,18 +28,27 @@ class TrnsprtDetails extends StatelessWidget {
       backgroundColor: kMoonStones,
       body: Column(
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(right: 20.0, left: 20.0, top: 50.0),
-            child: Center(
-                child: Text(
+          Padding(
+            padding: EdgeInsets.only(top: 50, left: 20, right: 20),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                Spacer(),
+                Text(
                   title,
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'Myriad Pro',
                     fontWeight: FontWeight.w700,
-                    fontSize: 36.0,
+                    fontSize: 28.0,
                   ),
-                )),
+                ),
+                Spacer(flex: 2),
+              ],
+            ),
           ),
           SizedBox(height: 10.0),
           Container(
@@ -47,15 +56,15 @@ class TrnsprtDetails extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               image: DecorationImage(
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 image: AssetImage(image),
               ),
             ),
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 20.0),
           Expanded(
             child: Container(
-              width: MediaQuery.of(context).size.width,
+              width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -76,45 +85,43 @@ class TrnsprtDetails extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   FromToCard(from: location, to: destination),
-                  SizedBox(height: 25),
+                  SizedBox(height: 20),
                   Text(
                     'Choose Schedule',
                     style: TextStyle(
                       fontFamily: 'MyriadPro',
                       fontWeight: FontWeight.w700,
-                      fontSize: 26,
+                      fontSize: 24,
                     ),
                   ),
+                  SizedBox(height: 10),
                   Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          for (Schedule schedule in schedules) ...[
-                            ScheduleBox(
-                              fromTime: schedule.fromTime,
-                              toTime: schedule.toTime,
-                              location: schedule.location,
-                              price: schedule.price,
-                              pressSelect: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                      return TicketDetails(
-                                        ticketInfo: TicketInfo(
-                                          location: location,
-                                          destination: destination,
-                                          fromTime: schedule.fromTime,
-                                          toTime: schedule.toTime,
-                                          price: schedule.price,
-                                          QrCode: 'assets/images/qr.png',
-                                        ),
-                                      );
-                                    }));
-                              },
-                            ),
-                          ]
-                        ],
-                      ),
+                    child: ListView.builder(
+                      itemCount: schedules.length,
+                      itemBuilder: (context, index) {
+                        final schedule = schedules[index];
+                        return ScheduleBox(
+                          fromTime: schedule.fromTime,
+                          toTime: schedule.toTime,
+                          location: schedule.location,
+                          price: schedule.price,
+                          pressSelect: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                                  return TicketDetails(
+                                    ticketInfo: TicketInfo(
+                                      location: location,
+                                      destination: destination,
+                                      fromTime: schedule.fromTime,
+                                      toTime: schedule.toTime,
+                                      price: schedule.price,
+                                      QrCode: 'assets/images/qr.png',
+                                    ),
+                                  );
+                                }));
+                          },
+                        );
+                      },
                     ),
                   ),
                 ],
